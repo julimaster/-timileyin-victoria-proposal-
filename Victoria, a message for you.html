@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Victoria, a message for you</title>
+<meta name="theme-color" content="#1a0509">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300;1,500&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<style>
+/* ===== EDIT COLOURS HERE ===== */
+:root{--bg:#14040a;--wine:#5a0f24;--rose:#c3203f;--blush:#f2b8c6;--gold:#e3c48a;--cream:#fbf1e6;
+--serif:"Cormorant Garamond",Georgia,serif;--sans:"Jost",system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--cream);font-family:var(--sans);font-weight:300;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+#glow{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 40%,var(--wine),var(--bg) 70%);transition:filter 4s,opacity 4s;filter:brightness(.7)}
+body.bright #glow{filter:brightness(1.5) saturate(1.2)}
+#glow::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 45%,#000 130%)}
+#fx{position:fixed;inset:0;z-index:1;pointer-events:none;width:100%;height:100%}
+main,footer{position:relative;z-index:2}
+.screen{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:max(24px,env(safe-area-inset-top)) 24px max(24px,env(safe-area-inset-bottom))}
+.serif{font-family:var(--serif)}
+.btn{font:400 1rem var(--sans);letter-spacing:.08em;color:var(--cream);background:linear-gradient(135deg,#a3162f,#6d0f27);border:1px solid var(--gold);border-radius:999px;padding:16px 34px;min-height:52px;cursor:pointer;box-shadow:0 0 0 0 rgba(227,196,138,.5),0 10px 30px rgba(0,0,0,.45);animation:pulse 3s infinite;transition:transform .25s}
+.btn:hover,.btn:active{transform:translateY(-2px) scale(1.04)}
+.btn.alt{background:rgba(255,255,255,.06);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:none}
+.btn:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+@keyframes pulse{50%{box-shadow:0 0 0 14px rgba(227,196,138,0),0 10px 30px rgba(0,0,0,.45)}}
+
+/* ===== INTRO / ENVELOPE ===== */
+#intro{gap:28px}
+#hint{font:italic 300 clamp(1.3rem,5vw,1.8rem) var(--serif);color:var(--blush);transition:opacity 1s}
+.scene{width:min(78vw,320px);aspect-ratio:3/2;position:relative;perspective:900px;transition:transform 1.4s cubic-bezier(.7,0,.2,1),opacity 1.2s;animation:float 5s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px) rotate(-.6deg)}}
+.scene.glow{filter:drop-shadow(0 0 26px rgba(227,196,138,.55))}
+.scene.go{animation:none;transform:translateY(60px) scale(.9)}
+.scene.gone{opacity:0;transform:translateY(160px) scale(.8)}
+.env,.env>*{position:absolute;inset:0}
+.env{filter:drop-shadow(0 22px 28px rgba(0,0,0,.6));transform-style:preserve-3d}
+.env .back{background:#8d1c33;border-radius:6px}
+.letter{position:absolute;left:7%;right:7%;top:6%;height:88%;background:linear-gradient(#fffaf2,#f3e3cf);border-radius:4px;display:grid;place-items:center;transition:transform 1.4s cubic-bezier(.5,0,.2,1) .7s,opacity 1s 2.4s;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.letter span{font:italic 500 clamp(1.1rem,4.5vw,1.5rem) var(--serif);color:#7a1226}
+.scene.open .letter{transform:translateY(-62%) scale(1.04)}
+.scene.gone .letter{opacity:0}
+.env .front{background:linear-gradient(135deg,#b0213c,#7d1a2f);clip-path:polygon(0 0,50% 55%,100% 0,100% 100%,0 100%);border-radius:6px}
+.env .flap{background:linear-gradient(#c4304c,#9a1d36);clip-path:polygon(0 0,100% 0,50% 58%);transform-origin:top;transition:transform 1s cubic-bezier(.6,0,.2,1)}
+.scene.open .flap{transform:rotateX(180deg);z-index:-1}
+.seal{position:absolute;left:50%;top:52%;width:15%;aspect-ratio:1;translate:-50% -50%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f0d49a,#a7792a);display:grid;place-items:center;color:#5a0f24;font-size:1.1rem;z-index:3;transition:opacity .5s}
+.scene.open .seal{opacity:0}
+
+/* ===== PROPOSAL ===== */
+#proposal{display:none;gap:10px}
+body.opened #proposal{display:flex}
+body.opened #intro{display:none}
+#rose{width:min(56vw,230px);height:auto;overflow:visible;margin-bottom:6px}
+#rose .stem{stroke-dasharray:260;stroke-dashoffset:260;transition:stroke-dashoffset 2.2s ease}
+#rose .lf{transform-box:fill-box;transform-origin:0 100%;transform:scale(0);transition:transform 1.2s cubic-bezier(.2,.8,.3,1.2)}
+#rose .lf.r{transform-origin:100% 100%}
+#rose .bud,#rose .p{transform-box:fill-box;transform-origin:50% 90%;transform:scale(0);transition:transform 2.4s cubic-bezier(.2,.9,.25,1.1)}
+#rose.grow .stem{stroke-dashoffset:0}
+#rose.grow .lf{transform:scale(1);transition-delay:1.5s}
+#rose.bloom .bud{transform:scale(1)}
+#rose.bloom .p{transform:scale(1);transition-delay:calc(var(--i)*.25s)}
+#rose.bloom{filter:drop-shadow(0 0 22px rgba(255,60,90,.45))}
+.line{opacity:0;filter:blur(10px);transform:translateY(14px);transition:opacity 2s,filter 2s,transform 2s}
+.line.show{opacity:1;filter:blur(0);transform:none}
+.who{font:italic 300 clamp(2.4rem,11vw,4.2rem) var(--serif);color:var(--blush)}
+.ask{font:500 clamp(2.7rem,12.5vw,5.6rem)/1.02 var(--serif);text-shadow:0 0 30px rgba(255,90,120,.55);max-width:11ch}
+.sub{font:italic 300 clamp(1.25rem,5vw,1.8rem) var(--serif);color:var(--gold)}
+.sign{font:300 1.05rem/1.7 var(--sans);letter-spacing:.06em;color:var(--blush)}
+.btns{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:18px}
+.private{font:italic 300 1.1rem var(--serif);color:var(--blush);opacity:.8;margin-top:6px}
+
+/* ===== CELEBRATION ===== */
+#yes{display:none;position:fixed;inset:0;z-index:5;background:rgba(20,4,10,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;padding:24px}
+#yes.on{display:flex}
+#yes .big{font:500 clamp(2.6rem,11vw,5rem)/1.05 var(--serif);text-shadow:0 0 34px rgba(255,200,120,.6)}
+#yes .btn{margin-top:22px}
+
+/* ===== STORY / GALLERY / FINAL ===== */
+.after{display:none}
+body.said .after{display:block}
+section.pad{padding:96px 22px;max-width:760px;margin:auto;text-align:center}
+h2{font:500 clamp(2rem,8vw,3.2rem)/1.1 var(--serif);margin-bottom:14px}
+.lead{font:italic 300 clamp(1.2rem,4.5vw,1.6rem)/1.5 var(--serif);color:var(--blush);margin-bottom:44px}
+.tl{position:relative;display:grid;gap:22px;text-align:left;padding-left:26px}
+.tl::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:linear-gradient(var(--gold),transparent)}
+.card{position:relative;padding:22px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid rgba(227,196,138,.25);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.card::before{content:"";position:absolute;left:-26px;top:28px;width:11px;height:11px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold)}
+.card h3{font:500 1.5rem var(--serif);color:var(--gold);margin-bottom:6px}
+.card small{display:block;color:var(--blush);margin-bottom:8px;font-size:.85rem}
+.card p{line-height:1.7}
+.rv{opacity:0;transform:translateY(26px);transition:opacity 1s,transform 1s}
+.rv.in{opacity:1;transform:none}
+.chap{text-align:left;margin-bottom:54px}
+.chap small{display:block;font:italic 400 1.05rem var(--serif);color:var(--gold);margin-bottom:6px}
+.chap h3{font:500 clamp(1.8rem,7vw,2.5rem)/1.1 var(--serif);margin-bottom:14px}
+.chap p{font:300 clamp(1.15rem,4.2vw,1.35rem)/1.7 var(--serif);color:var(--cream);opacity:.92;margin-bottom:12px}
+.chap::before{content:"";display:block;width:44px;height:1px;background:var(--gold);margin-bottom:18px}
+.endline{font:italic 300 clamp(1.5rem,6vw,2.2rem)/1.4 var(--serif);color:var(--blush);margin-top:20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:22px 12px;text-align:left}
+.mm:last-child{grid-column:1/-1}
+.mm figcaption{font:italic 400 1.08rem/1.4 var(--serif);color:var(--blush);padding:10px 4px 0}
+.ph{--a:#e0975a;--b:#8d1c33;position:relative;aspect-ratio:4/5;border-radius:22px;overflow:hidden;cursor:zoom-in;box-shadow:0 14px 34px rgba(0,0,0,.5);border:1px solid rgba(227,196,138,.22);background:radial-gradient(circle at 25% 30%,rgba(227,196,138,.5) 0 6%,transparent 7%),radial-gradient(circle at 72% 22%,rgba(255,125,147,.4) 0 9%,transparent 10%),radial-gradient(circle at 58% 62%,rgba(227,196,138,.28) 0 12%,transparent 13%),linear-gradient(170deg,var(--a),var(--b) 55%,#2a0812)}
+.mm:last-child .ph{aspect-ratio:16/10}
+.s2{--a:#f0b46a;--b:#a3162f}.s3{--a:#f08a4b;--b:#6d0f27}.s4{--a:#3b2a6b;--b:#5a0f24}.s5{--a:#c3203f;--b:#3a0a18}
+.ph::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 60px rgba(0,0,0,.45);pointer-events:none}
+.ph .tag{position:absolute;left:14px;bottom:12px;z-index:1;font:italic 500 1.25rem var(--serif);color:var(--gold);text-shadow:0 2px 10px #000}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;transition:transform .8s}
+.ph:hover img,.ph:active img{transform:scale(1.08)}
+#lb{position:fixed;inset:0;z-index:9;background:rgba(10,2,5,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:none;place-items:center;padding:20px}
+#lb.on{display:grid}
+#lbc .ph{width:min(88vw,460px);max-height:76svh;aspect-ratio:4/5;cursor:default;animation:zin .45s cubic-bezier(.2,.8,.2,1)}
+#lbc .mm,#lbc{display:block}
+#lb p{position:absolute;left:20px;right:20px;bottom:max(26px,env(safe-area-inset-bottom));text-align:center;font:italic 1.25rem var(--serif);color:var(--gold)}
+#lbx{position:absolute;top:max(14px,env(safe-area-inset-top));right:14px;width:48px;height:48px;border-radius:50%;border:1px solid var(--gold);background:rgba(20,4,10,.6);color:var(--cream);font-size:1.5rem;cursor:pointer}
+@keyframes zin{from{transform:scale(.88);opacity:0}}
+.final{font:300 clamp(1.7rem,7vw,2.6rem)/1.35 var(--serif)}
+.final b{display:block;font-weight:500;font-size:clamp(2.4rem,10vw,4rem);margin:26px 0;text-shadow:0 0 28px rgba(255,90,120,.5)}
+#ring{width:130px;margin:0 auto 18px;display:block;animation:float 5s ease-in-out infinite;filter:drop-shadow(0 0 16px rgba(227,196,138,.6))}
+.spark{animation:tw 2.4s infinite}
+@keyframes tw{50%{opacity:.2}}
+footer{padding:40px 20px max(40px,env(safe-area-inset-bottom));text-align:center;font-size:.8rem;letter-spacing:.14em;color:rgba(251,241,230,.55)}
+footer b{font-weight:400;color:var(--gold)}
+
+/* ===== MUSIC ===== */
+#music{position:fixed;top:max(14px,env(safe-area-inset-top));right:14px;z-index:8;display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(20,4,10,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(227,196,138,.3);color:var(--cream);font-size:.82rem}
+#music button{background:none;border:0;color:inherit;font:inherit;cursor:pointer;min-height:32px}
+#music input{width:0;opacity:0;transition:.3s;accent-color:var(--gold)}
+#music.playing input{width:64px;opacity:1}
+#music.playing .note{animation:tw 1.2s infinite}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01s!important;transition-delay:0s!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div id="glow"></div>
+<canvas id="fx"></canvas>
+
+<!-- MUSIC: put your song at assets/romantic-song.mp3 (or change the src below) -->
+<div id="music"><button id="mbtn" aria-label="Play our song"><span class="note">🎵</span> <span id="mt">Play our song</span></button><input id="vol" type="range" min="0" max="1" step=".05" value=".6" aria-label="Volume"></div>
+<audio id="song" src="assets/romantic-song.mp3" loop preload="none"></audio>
+
+<main>
+  <!-- 1. OPENING -->
+  <section class="screen" id="intro">
+    <p id="hint">Victoria, you have a special message…</p>
+    <div class="scene" id="scene" aria-hidden="true">
+      <div class="env">
+        <div class="back"></div>
+        <div class="letter"><span>For Victoria</span></div>
+        <div class="front"></div>
+        <div class="flap"></div>
+        <div class="seal">♥</div>
+      </div>
+    </div>
+    <button class="btn" id="openBtn">Open My Heart ❤️</button>
+  </section>
+
+  <!-- 2. PROPOSAL -->
+  <section class="screen" id="proposal">
+    <svg id="rose" viewBox="0 0 200 300" aria-hidden="true">
+      <defs>
+        <radialGradient id="pg" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#ff5b78"/><stop offset=".6" stop-color="#c3203f"/><stop offset="1" stop-color="#6d0f27"/></radialGradient>
+        <radialGradient id="pg2" cx="50%" cy="30%" r="80%"><stop offset="0" stop-color="#e23a58"/><stop offset="1" stop-color="#7d1329"/></radialGradient>
+        <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3f8a4a"/><stop offset="1" stop-color="#17492a"/></linearGradient>
+      </defs>
+      <path class="stem" d="M100 290 C96 240 106 200 100 140" fill="none" stroke="#2c7a3e" stroke-width="5" stroke-linecap="round"/>
+      <path class="lf" d="M101 235 C130 215 160 220 172 238 C145 252 118 250 101 235Z" fill="url(#lg)"/>
+      <path class="lf r" d="M99 205 C72 188 44 192 32 210 C58 224 82 222 99 205Z" fill="url(#lg)"/>
+      <g transform="translate(100 100)">
+        <ellipse class="p" style="--i:4" cx="-34" cy="12" rx="32" ry="44" fill="url(#pg2)" transform="rotate(-38)"/>
+        <ellipse class="p" style="--i:4" cx="34" cy="12" rx="32" ry="44" fill="url(#pg2)" transform="rotate(38)"/>
+        <ellipse class="p" style="--i:3" cx="-20" cy="2" rx="30" ry="42" fill="url(#pg)" transform="rotate(-20)"/>
+        <ellipse class="p" style="--i:3" cx="20" cy="2" rx="30" ry="42" fill="url(#pg)" transform="rotate(20)"/>
+        <ellipse class="p" style="--i:2" cx="0" cy="8" rx="28" ry="38" fill="url(#pg2)"/>
+        <ellipse class="p" style="--i:1" cx="-9" cy="-4" rx="20" ry="30" fill="url(#pg)" transform="rotate(-10)"/>
+        <ellipse class="bud" cx="6" cy="-6" rx="17" ry="26" fill="#9c1631" transform="rotate(12)"/>
+        <path class="bud" d="M-10 -22 C0 -34 14 -30 16 -16 C6 -22 -2 -18 -10 -22Z" fill="#ff7d93" opacity=".55"/>
+      </g>
+    </svg>
+    <p class="line who serif" id="l1">Victoria…</p>
+    <h1 class="line ask" id="l2">Will You Marry Me?</h1>
+    <p class="line sub" id="l3">Forever sounds better with you.</p>
+    <p class="line sign" id="l4">With all my love,<br>Timileyin ❤️</p>
+    <div class="btns line" id="l5">
+      <button class="btn" data-yes>YES ❤️</button>
+      <button class="btn alt" data-yes>OF COURSE 💍</button>
+    </div>
+    <p class="line private" id="l6">Victoria, this moment is just for you.</p>
+  </section>
+
+  <!-- 3. AFTER YES -->
+  <div class="after" id="after">
+    <section class="pad" id="story">
+      <h2 class="rv">Our Story</h2>
+      <p class="lead rv">Victoria, I wrote this for you.</p>
+      <article class="chap rv"><small>Chapter 1</small><h3>The Beginning</h3>
+        <p>I did not plan you. Two people crossed paths on an ordinary day, the kind you forget by evening.</p>
+        <p>But I did not forget you. A smile, a few words, and somehow I was curious. I wanted to know more about you.</p></article>
+      <article class="chap rv"><small>Chapter 2</small><h3>Getting Closer</h3>
+        <p>Our conversations grew longer. Laughter came easier. I stopped checking the time when we talked.</p>
+        <p>Somewhere along the way, you became the person I looked forward to hearing from every day.</p></article>
+      <article class="chap rv"><small>Chapter 3</small><h3>Falling in Love</h3>
+        <p>It was never one big moment. It was the little things: the way you listen, the way you laugh, the way a hard day felt lighter with you in it.</p>
+        <p>That is when I understood. You were not just a part of my days anymore. You had become important to my whole heart.</p></article>
+      <article class="chap rv"><small>Chapter 4</small><h3>Forever</h3>
+        <p>Now I know I do not just want more beautiful moments with you.</p>
+        <p>I want to build a lifetime of them, with you, one ordinary and extraordinary day at a time.</p>
+        <p class="endline">Some stories are meant to be read. Ours is meant to be lived, together, forever.</p></article>
+    </section>
+
+    <section class="pad" id="photos">
+      <h2 class="rv">Moments I Never Want To Forget</h2>
+      <p class="lead rv">Victoria, there are moments in life that pass in seconds but stay in your heart forever. If I could keep only a few moments, I’d keep the ones that somehow always lead me back to you.</p>
+      <!-- EDIT: add images as assets/moment1.jpg to moment5.jpg (prompts in assets/IMAGE_PROMPTS.md). Change captions here. -->
+      <div class="grid">
+        <figure class="mm rv"><div class="ph s1" data-cap="The beginning of something beautiful."><img loading="lazy" src="assets/moment1.jpg" alt="The First Moment" onerror="this.remove()"><span class="tag">The First Moment</span></div><figcaption>The beginning of something beautiful.</figcaption></figure>
+        <figure class="mm rv"><div class="ph s2" data-cap="It was always the little things."><img loading="lazy" src="assets/moment2.jpg" alt="The Little Things" onerror="this.remove()"><span class="tag">The Little Things</span></div><figcaption>It was always the little things.</figcaption></figure>
+        <figure class="mm rv"><div class="ph s3" data-cap="Everywhere feels better with you."><img loading="lazy" src="assets/moment3.jpg" alt="A Perfect Evening" onerror="this.remove()"><span class="tag">A Perfect Evening</span></div><figcaption>Everywhere feels better with you.</figcaption></figure>
+        <figure class="mm rv"><div class="ph s4" data-cap="My favorite place will always be beside you."><img loading="lazy" src="assets/moment4.jpg" alt="Always You" onerror="this.remove()"><span class="tag">Always You</span></div><figcaption>My favorite place will always be beside you.</figcaption></figure>
+        <figure class="mm rv"><div class="ph s5" data-cap="And this is only the beginning."><img loading="lazy" src="assets/moment5.jpg" alt="Forever" onerror="this.remove()"><span class="tag">Forever</span></div><figcaption>And this is only the beginning.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="pad" id="final">
+      <svg id="ring" viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="74" r="32" fill="none" stroke="#e3c48a" stroke-width="7"/>
+        <circle cx="60" cy="74" r="32" fill="none" stroke="#fff3cf" stroke-width="1.5" opacity=".6"/>
+        <path d="M46 36 L74 36 L82 24 L60 10 L38 24Z" fill="#dff4ff"/>
+        <path d="M38 24 L82 24 M60 10 L52 36 M60 10 L68 36" stroke="#8fc8e8" stroke-width="1" fill="none"/>
+        <path class="spark" d="M96 14 l3 8 8 3 -8 3 -3 8 -3-8 -8-3 8-3z" fill="#fff3cf"/>
+      </svg>
+      <p class="final rv">Victoria,<br>I don’t just want a moment with you.<br>I want a lifetime.</p>
+      <p class="final rv"><b>Will you marry me?</b></p>
+      <p class="sign rv">Forever yours,<br>Timileyin ❤️</p>
+    </section>
+  </div>
+</main>
+
+<div id="yes" role="dialog" aria-live="polite">
+  <p class="sub line" id="y0">Victoria said…</p>
+  <p class="big line" id="y1">She said YES! ❤️</p>
+  <p class="who line" id="y2">Timileyin &amp; Victoria</p>
+  <p class="sub line" id="y3">Forever starts here.</p>
+  <button class="btn line" id="y4">Continue our story</button>
+</div>
+<div id="lb"><button id="lbx" aria-label="Close">×</button><div id="lbc"></div><p></p></div>
+
+<footer>Designed by <b>Comster</b></footer>
+
+<script>
+(()=>{
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const small=innerWidth<640;
+
+/* ---------- Particles (petals, hearts, sparkles) ---------- */
+const cv=$('#fx'),cx=cv.getContext('2d');let W,H,dpr=Math.min(devicePixelRatio||1,2);
+const fit=()=>{W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0)};fit();addEventListener('resize',fit);
+let ps=[],target=0;
+const cols=['#c3203f','#e23a58','#f2b8c6','#e3c48a','#ff7d93'];
+function mk(kind,x,y,burst){
+  const a=Math.random()*Math.PI*2,sp=burst?3+Math.random()*9:0;
+  return{k:kind,x:x??Math.random()*W,y:y??-20,vx:burst?Math.cos(a)*sp:(Math.random()-.5)*.6,vy:burst?Math.sin(a)*sp-4:.5+Math.random()*1.1,
+  s:kind==='spark'?1+Math.random()*2:6+Math.random()*(burst?10:9),r:Math.random()*6,vr:(Math.random()-.5)*.05,ph:Math.random()*6,
+  c:cols[Math.random()*cols.length|0],life:burst?140+Math.random()*80:1e9,a:kind==='spark'?.9:.55+Math.random()*.35,burst}
+}
+function heart(s){cx.beginPath();cx.moveTo(0,s*.35);cx.bezierCurveTo(-s,-s*.3,-s*.5,-s,0,-s*.35);cx.bezierCurveTo(s*.5,-s,s,-s*.3,0,s*.35);cx.fill()}
+function frame(){
+  cx.clearRect(0,0,W,H);
+  if(!reduce&&ps.filter(p=>!p.burst).length<target&&Math.random()<.12){const k=['petal','petal','heart','spark'][Math.random()*4|0];ps.push(mk(k,undefined,-20))}
+  ps=ps.filter(p=>p.life>0&&p.y<H+30&&p.x>-60&&p.x<W+60);
+  for(const p of ps){
+    p.ph+=.02;p.x+=p.vx+(p.burst?0:Math.sin(p.ph)*.5);p.y+=p.vy;p.r+=p.vr;p.life--;
+    if(p.burst){p.vy+=.12;p.vx*=.985}
+    cx.save();cx.globalAlpha=Math.min(1,p.life/40)*p.a*(p.k==='spark'?.6+.4*Math.sin(p.ph*4):1);cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;
+    if(p.k==='petal'){cx.beginPath();cx.ellipse(0,0,p.s*.6,p.s,0,0,7);cx.fill()}
+    else if(p.k==='heart')heart(p.s);
+    else{cx.shadowColor=p.c;cx.shadowBlur=8;cx.beginPath();cx.arc(0,0,p.s,0,7);cx.fill()}
+    cx.restore();
+  }
+  requestAnimationFrame(frame);
+}
+frame();
+function setAmbient(n){target=reduce?0:Math.round(n*(small?.55:1))}
+function burst(x,y,n){if(reduce)n=12;n=small?n*.6|0:n;for(let i=0;i<n;i++)ps.push(mk(['petal','heart','spark','heart'][i%4],x,y,true))}
+setAmbient(16);
+
+/* tap hearts */
+addEventListener('pointerdown',e=>{if(!e.target.closest('button,input,.ph'))burst(e.clientX,e.clientY,6)});
+
+/* ---------- Opening sequence ---------- */
+const show=(...ids)=>ids.forEach(i=>$('#'+i).classList.add('show'));
+$('#openBtn').onclick=async()=>{
+  const sc=$('#scene');$('#openBtn').style.display='none';$('#hint').style.opacity=0;
+  sc.classList.add('glow','go');await sleep(900);
+  sc.classList.add('open');setAmbient(26);burst(W/2,H/2,14);document.body.classList.add('bright');
+  await sleep(3200);sc.classList.add('gone');await sleep(900);
+  document.body.classList.add('opened');
+  const r=$('#rose');await sleep(300);r.classList.add('grow');await sleep(2200);r.classList.add('bloom');setAmbient(34);
+  await sleep(2800);show('l1');await sleep(2200);show('l2');await sleep(2800);show('l3');await sleep(2200);show('l4');
+  await sleep(1800);show('l5');await sleep(1500);show('l6');
+};
+
+/* ---------- YES ---------- */
+let said=false;
+$$('[data-yes]').forEach(b=>b.onclick=async e=>{
+  if(said)return;said=true;
+  const r=e.currentTarget.getBoundingClientRect();
+  burst(r.left+r.width/2,r.top+r.height/2,90);
+  const y=$('#yes');y.classList.add('on');setAmbient(46);
+  setTimeout(()=>burst(W*.2,H*.6,60),500);setTimeout(()=>burst(W*.8,H*.6,60),900);setTimeout(()=>burst(W/2,H*.4,80),1500);
+  await sleep(500);show('y0');await sleep(1200);show('y1');await sleep(1800);show('y2');await sleep(1800);show('y3');await sleep(1600);show('y4');
+});
+$('#y4').onclick=()=>{
+  $('#yes').classList.remove('on');document.body.classList.add('said');
+  $('#after').scrollIntoView({behavior:reduce?'auto':'smooth'});observe();
+};
+function observe(){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+  $$('.rv').forEach(el=>io.observe(el));
+}
+
+/* ---------- Lightbox ---------- */
+const lb=$('#lb'),lbc=$('#lbc');
+const closeLb=()=>lb.classList.remove('on');
+$$('.ph').forEach(f=>f.onclick=()=>{lbc.innerHTML='';lbc.appendChild(f.cloneNode(true));lb.querySelector('p').textContent=f.dataset.cap;lb.classList.add('on')});
+lb.onclick=e=>{if(!e.target.closest('.ph'))closeLb()};
+addEventListener('keydown',e=>{if(e.key==='Escape')closeLb()});
+
+/* ---------- Music ---------- */
+const au=$('#song'),mb=$('#mbtn'),box=$('#music');
+au.volume=.6;$('#vol').oninput=e=>au.volume=e.target.value;
+mb.onclick=()=>{
+  if(au.paused){au.play().then(()=>{box.classList.add('playing');$('#mt').textContent='Playing'}).catch(()=>{$('#mt').textContent='Add assets/romantic-song.mp3'})}
+  else{au.pause();box.classList.remove('playing');$('#mt').textContent='Play our song'}
+};
+})();
+</script>
+</body>
+</html>
